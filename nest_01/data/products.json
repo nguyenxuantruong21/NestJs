@@ -1,0 +1,64 @@
+[
+  {
+    "id": 1,
+    "name": "Product A",
+    "price": 100,
+    "description": "Description for Product A",
+    "category": "electronics",
+    "tags": [
+      "hot"
+    ]
+  },
+  {
+    "id": 2,
+    "name": "Product B",
+    "price": 200,
+    "description": "Description for Product B",
+    "category": "furniture",
+    "tags": [
+      "hot"
+    ]
+  },
+  {
+    "id": 3,
+    "name": "Product C",
+    "price": 200,
+    "description": "Description for Product C",
+    "category": "clothing",
+    "tags": [
+      "hot",
+      "vintage"
+    ]
+  },
+  {
+    "id": 1735111288575,
+    "name": "Product D",
+    "price": 1400,
+    "description": "Description for Product D",
+    "category": "clothing",
+    "tags": [
+      "hot",
+      "vintage"
+    ]
+  },
+  {
+    "id": 1735111699043,
+    "name": "Product E",
+    "price": 1400,
+    "description": "Description for Product E",
+    "category": "clothing",
+    "tags": [
+      "vintage"
+    ]
+  },
+  {
+    "id": 1735115128146,
+    "name": "Product E.1",
+    "price": 1401,
+    "description": "Description for Product E",
+    "category": "electronics",
+    "tags": [
+      "vintage"
+    ]
+  }
+]
