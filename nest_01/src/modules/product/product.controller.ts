@@ -8,12 +8,15 @@ import {
   Body,
   ValidationPipe,
   HttpException,
+  UseInterceptors,
 } from '@nestjs/common';
 import { ProductsService } from './product.service';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
+import { TransformerInterceptor } from 'src/interceptor/transformer/transformer.interceptor';
 
 @Controller('products')
+@UseInterceptors(TransformerInterceptor)
 export class ProductsController {
   constructor(private readonly productsService: ProductsService) {}
 

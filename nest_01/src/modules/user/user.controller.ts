@@ -1,52 +1,50 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
-  NotFoundException,
   Param,
+  Patch,
   Post,
-  Put,
-  ValidationPipe,
+  UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
 import { UserService } from './user.service';
-import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
 import { Injectable } from '@nestjs/common';
-import { UpdateValidationPipe } from 'src/validations/pipe';
+import { TransformerInterceptor } from 'src/interceptor/transformer/transformer.interceptor';
+import { AuthGuard } from 'src/guard/auth/auth.guard';
+import { PermissionGuard } from 'src/guard/permission/permission.guard';
 
 @Injectable()
 @Controller('users')
+@UseInterceptors(TransformerInterceptor)
+@UseGuards(AuthGuard)
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
-  @Get()
-  findAll() {
-    return this.userService.findAll();
-  }
-  @Get(':id')
-  findOne(@Param('id') id: number) {
-    const user = this.userService.findOne(id);
-    if (!user) {
-      throw new NotFoundException('User not found');
-    }
-    return user;
+  @Get('')
+  async findAll() {
+    return await this.userService.findAll();
   }
 
-  @Post()
-  create(@Body(ValidationPipe) body: CreateUserDto) {
-    return this.userService.create(body);
+  @Get('/:id')
+  async findOne(@Param('id') id: number) {
+    return await this.userService.findOne(+id);
   }
 
-  @Put(':id')
-  update(
-    @Param('id') id: string,
-    @Body(UpdateValidationPipe) body: UpdateUserDto,
-  ) {
-    return this.userService.update(body);
+  @Patch('/:id')
+  async update(@Param('id') id: number, @Body() body: any) {
+    return await this.userService.update(id, body);
   }
 
-  @Get()
-  index() {
-    return this.userService.index();
+  @Delete('/:id')
+  async delete(@Param('id') id: number) {
+    return await this.userService.delete(id);
+  }
+
+  @Post('')
+  @UseGuards(PermissionGuard)
+  async create(@Body() body: any) {
+    return await this.userService.create(body);
   }
 }

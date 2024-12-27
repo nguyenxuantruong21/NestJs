@@ -3,7 +3,5 @@ import { UserService } from '../user/user.service';
 
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly userService: UserService) {
-    console.log(`auth controller created`);
-  }
+  constructor(private readonly userService: UserService) {}
 }
