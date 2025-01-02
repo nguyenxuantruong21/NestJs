@@ -2,8 +2,11 @@ import { HttpException, HttpStatus, Injectable, Scope } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { User } from './entities/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
+import * as bcrypt from 'bcrypt';
 
-@Injectable({ scope: Scope.DEFAULT })
+const SALT_OR_ROUNDS = 10;
+
+@Injectable()
 export class UserService {
   constructor(
     @InjectRepository(User)
@@ -33,8 +36,27 @@ export class UserService {
     return user;
   }
 
-  async create(userData: Partial<User>) {
+  async createUser(userData: Partial<User>) {
     const user = this.userRepository.create(userData);
+    const hashPassword = await bcrypt.hash(userData.password, SALT_OR_ROUNDS);
+    user.password = hashPassword;
     return this.userRepository.save(user);
+  }
+
+  async findByEmail(email: string) {
+    const user = await this.userRepository.findOneBy({ email });
+    return user;
+  }
+
+  async validateUser(email: string, password: string) {
+    const user = await this.findByEmail(email);
+    if (!user) {
+      return null;
+    }
+    const status = bcrypt.compareSync(password, user.password);
+    if (status) {
+      return user;
+    }
+    return null;
   }
 }

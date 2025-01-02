@@ -45,6 +45,6 @@ export class UserController {
   @Post('')
   @UseGuards(PermissionGuard)
   async create(@Body() body: any) {
-    return await this.userService.create(body);
+    return await this.userService.createUser(body);
   }
 }
