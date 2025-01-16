@@ -6,6 +6,8 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { UsersModule } from './modules/users/users.module';
 import { User } from './modules/users/entities/user.entity';
 import { PostsModule } from './modules/posts/posts.module';
+import { Phone } from './modules/users/entities/phone.entiry';
+import { PhoneModule } from './modules/phone/phone.module';
 
 const isDev = process.env.NODE_ENV === 'development' || !process.env.NODE_ENV;
 
@@ -19,11 +21,13 @@ const isDev = process.env.NODE_ENV === 'development' || !process.env.NODE_ENV;
       username: process.env.DB_USER_NAME,
       password: process.env.DB_PASSWORD,
       database: process.env.DB_DATABASE,
-      entities: [User],
+      entities: [User, Phone],
       synchronize: isDev,
+      logging: isDev,
     }),
     UsersModule,
     PostsModule,
+    PhoneModule,
   ],
   controllers: [AppController],
   providers: [AppService],

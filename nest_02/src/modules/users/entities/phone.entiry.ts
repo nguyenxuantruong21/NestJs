@@ -5,42 +5,21 @@ import {
   OneToOne,
   JoinColumn,
 } from 'typeorm';
-import { Phone } from './phone.entiry';
+import { User } from './user.entity';
 
-@Entity('users')
-export class User {
+@Entity('phones')
+export class Phone {
   @PrimaryGeneratedColumn()
   id: number;
 
   @Column({
-    length: 50,
+    length: 15,
   })
-  name: string;
+  phone: string;
 
-  @Column({
-    length: 100,
-    unique: true,
-  })
-  email: string;
-
-  @Column({
-    length: 100,
-  })
-  password: string;
-
-  @Column({
-    default: true,
-  })
-  status: boolean;
-
-  @Column({
-    type: 'text',
-    nullable: true,
-  })
-  bio: string;
-
-  @OneToOne(() => Phone, (phone) => phone.user)
-  phone: Phone;
+  @OneToOne(() => User, (user) => user.phone)
+  @JoinColumn({ name: 'user_id' })
+  user: User;
 
   @Column({
     type: 'timestamp',

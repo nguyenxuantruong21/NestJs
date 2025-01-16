@@ -6,12 +6,22 @@ import {
   Patch,
   Param,
   Delete,
+  Headers,
+  Query,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 
-@Controller('users')
+export type QueryFindAll = {
+  q: string;
+  _sort: string;
+  _order: string;
+  _page: number;
+  _limit: number;
+};
+
+@Controller('user')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
@@ -21,8 +31,16 @@ export class UsersController {
   }
 
   @Get()
-  findAll() {
-    return this.usersService.findAll();
+  async findAll(
+    @Query()
+    query: QueryFindAll,
+  ) {
+    const [user, count] = await this.usersService.findAll(query);
+    return {
+      total: count,
+      current_page: +query._page ? +query._page : 1,
+      data: user,
+    };
   }
 
   @Get(':id')
@@ -35,8 +53,9 @@ export class UsersController {
     return this.usersService.update(+id, updateUserDto);
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.usersService.remove(+id);
+  @Delete()
+  remove(@Headers('ids') ids: string) {
+    const parsedIds = JSON.parse(ids);
+    return this.usersService.remove(parsedIds);
   }
 }
