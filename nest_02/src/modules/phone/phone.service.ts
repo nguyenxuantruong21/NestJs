@@ -1,26 +1,22 @@
 import { Injectable } from '@nestjs/common';
 import { CreatePhoneDto } from './dto/create-phone.dto';
 import { UpdatePhoneDto } from './dto/update-phone.dto';
+import { User } from '../users/entities/user.entity';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Phone } from './entities/phone.entity';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class PhoneService {
-  create(createPhoneDto: CreatePhoneDto) {
-    return 'This action adds a new phone';
-  }
-
-  findAll() {
-    return `This action returns all phone`;
-  }
-
-  findOne(id: number) {
-    return `This action returns a #${id} phone`;
-  }
-
-  update(id: number, updatePhoneDto: UpdatePhoneDto) {
-    return `This action updates a #${id} phone`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} phone`;
+  constructor(
+    @InjectRepository(Phone)
+    private readonly phoneRepository: Repository<Phone>,
+  ) {}
+  create(createPhoneDto: any, user: User) {
+    if (user) {
+      createPhoneDto.user = user;
+    }
+    const phone = this.phoneRepository.create(createPhoneDto);
+    return this.phoneRepository.save(phone);
   }
 }

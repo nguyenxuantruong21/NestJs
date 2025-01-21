@@ -6,8 +6,8 @@ import {
   Patch,
   Param,
   Delete,
-  Headers,
   Query,
+  BadRequestException,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -54,8 +54,19 @@ export class UsersController {
   }
 
   @Delete()
-  remove(@Headers('ids') ids: string) {
-    const parsedIds = JSON.parse(ids);
-    return this.usersService.remove(parsedIds);
+  async remove(@Body() ids: number[]) {
+    if (!(ids as any).ids.length) {
+      throw new BadRequestException('Invalid Body');
+    }
+    const count = await this.usersService.remove((ids as any).ids);
+    if (!count) {
+      return {
+        success: false,
+      };
+    }
+    return {
+      success: true,
+      deleteCount: count,
+    };
   }
 }

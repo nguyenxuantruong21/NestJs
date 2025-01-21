@@ -1,3 +1,4 @@
+import { Phone } from 'src/modules/phone/entities/phone.entity';
 import {
   Entity,
   PrimaryGeneratedColumn,
@@ -5,7 +6,6 @@ import {
   OneToOne,
   JoinColumn,
 } from 'typeorm';
-import { Phone } from './phone.entiry';
 
 @Entity('users')
 export class User {

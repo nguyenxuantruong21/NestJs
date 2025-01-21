@@ -6,8 +6,8 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { UsersModule } from './modules/users/users.module';
 import { User } from './modules/users/entities/user.entity';
 import { PostsModule } from './modules/posts/posts.module';
-import { Phone } from './modules/users/entities/phone.entiry';
 import { PhoneModule } from './modules/phone/phone.module';
+import { Phone } from './modules/phone/entities/phone.entity';
 
 const isDev = process.env.NODE_ENV === 'development' || !process.env.NODE_ENV;
 
