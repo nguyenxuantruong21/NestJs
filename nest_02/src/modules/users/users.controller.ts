@@ -19,6 +19,7 @@ export type QueryFindAll = {
   _order: string;
   _page: number;
   _limit: number;
+  include: string;
 };
 
 @Controller('user')
@@ -44,8 +45,11 @@ export class UsersController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.usersService.findOne(+id);
+  findOne(
+    @Param('id') id: string,
+    @Query() query: { include: string; [key: string]: string },
+  ) {
+    return this.usersService.findOne(+id, query);
   }
 
   @Patch(':id')
@@ -68,5 +72,10 @@ export class UsersController {
       success: true,
       deleteCount: count,
     };
+  }
+
+  @Delete(':id')
+  async deleteUserId(@Param('id') id: number) {
+    return this.usersService.deleteUserId(id);
   }
 }

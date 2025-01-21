@@ -1,36 +1,31 @@
-import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
+import { User } from 'src/modules/users/entities/user.entity';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  OneToOne,
+  JoinColumn,
+  ManyToOne,
+} from 'typeorm';
 
-@Entity()
+@Entity('posts')
 export class Post {
   @PrimaryGeneratedColumn()
   id: number;
 
   @Column({
-    length: 50,
+    length: 15,
   })
-  name: string;
+  title: string;
 
   @Column({
-    length: 100,
-    unique: true,
+    length: 15,
   })
-  email: string;
+  content: string;
 
-  @Column({
-    length: 100,
-  })
-  password: string;
-
-  @Column({
-    default: true,
-  })
-  status: boolean;
-
-  @Column({
-    type: 'text',
-    nullable: true,
-  })
-  bio: string;
+  @ManyToOne(() => User, (user) => user.posts)
+  @JoinColumn({ name: 'user_id' })
+  user: User;
 
   @Column({
     type: 'timestamp',

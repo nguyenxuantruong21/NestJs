@@ -19,4 +19,12 @@ export class PhoneService {
     const phone = this.phoneRepository.create(createPhoneDto);
     return this.phoneRepository.save(phone);
   }
+
+  async deleteByUserId(id: number) {
+    return this.phoneRepository.delete({
+      user: {
+        id,
+      },
+    });
+  }
 }

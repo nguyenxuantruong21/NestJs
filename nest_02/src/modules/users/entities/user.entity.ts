@@ -1,10 +1,12 @@
 import { Phone } from 'src/modules/phone/entities/phone.entity';
+import { Post } from 'src/modules/post/entities/post.entity';
 import {
   Entity,
   PrimaryGeneratedColumn,
   Column,
   OneToOne,
   JoinColumn,
+  OneToMany,
 } from 'typeorm';
 
 @Entity('users')
@@ -41,6 +43,8 @@ export class User {
 
   @OneToOne(() => Phone, (phone) => phone.user)
   phone: Phone;
+  @OneToMany(() => Post, (post) => post.user)
+  posts: Post[];
 
   @Column({
     type: 'timestamp',

@@ -16,13 +16,20 @@ import { User } from './entities/user.entity';
 import { hashPassword } from 'src/utils/hashing';
 import { QueryFindAll } from './users.controller';
 import { PhoneService } from '../phone/phone.service';
+import { PostService } from '../post/post.service';
 
 @Injectable()
 export class UsersService {
+  // filter
+  private filters = {
+    posts: 'title',
+    phone: 'phone',
+  };
   constructor(
     @InjectRepository(User)
     private readonly usersRepository: Repository<User>,
     private readonly phoneService: PhoneService,
+    private readonly postsService: PostService,
   ) {}
 
   async create(createUserDto: Partial<User & { phone: string }>) {
@@ -35,7 +42,7 @@ export class UsersService {
   }
 
   async findAll(query: QueryFindAll) {
-    const { q, _limit = 10, _order, _page = 1, _sort } = query;
+    const { q, _limit = 10, _order, _page = 1, _sort, include } = query;
     const take = _limit;
     const skip = (_page - 1) * take;
     const where = [];
@@ -47,6 +54,12 @@ export class UsersService {
         {},
       );
     }
+
+    let relations = [];
+    if (include) {
+      relations = include.split(',');
+    }
+
     return this.usersRepository.findAndCount({
       order: {
         [_sort]: _order,
@@ -54,31 +67,38 @@ export class UsersService {
       take,
       skip,
       where,
-      relations: {
-        phone: true,
-      },
+      relations,
     });
   }
 
-  async findOne(id: number) {
-    const user = await this.usersRepository.findOneOrFail({
+  async findOne(id: number, query: { include: string; [key: string]: string }) {
+    const { include, ...rest } = query;
+    let relations = [];
+    if (include) {
+      relations = include.split(',');
+    }
+
+    const filterRelations = {};
+    Object.keys(rest).forEach((key) => {
+      const relationName = key.replace('_query', '');
+      filterRelations[relationName] = {
+        [this.filters[relationName]]: Like(`%${rest[key]}%`),
+      };
+    });
+
+    const user = await this.usersRepository.findOne({
       where: {
         id,
+        ...filterRelations,
       },
-      select: {
-        id: true,
-        name: true,
-        email: true,
-        status: true,
-        bio: true,
-      },
+      relations,
     });
     return user;
   }
 
   async update(id: number, updateUserDto: UpdateUserDto) {
     await this.usersRepository.update(id, updateUserDto);
-    return this.findOne(id);
+    // return this.findOne(id);
   }
 
   async remove(ids: number[]) {
@@ -88,5 +108,21 @@ export class UsersService {
     return data.affected;
   }
 
-  async getAllUser() {}
+  async deleteUserId(id: number) {
+    const user = await this.usersRepository.findOne({
+      where: {
+        id,
+      },
+    });
+
+    // delete phone by user_id
+    await this.phoneService.deleteByUserId(id);
+
+    // delete post by user_id
+    await this.postsService.deleteByUserId(id);
+
+    // delete user
+    await this.usersRepository.delete(id);
+    return user;
+  }
 }
