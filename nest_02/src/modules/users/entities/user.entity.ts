@@ -1,11 +1,11 @@
 import { Phone } from 'src/modules/phone/entities/phone.entity';
 import { Post } from 'src/modules/post/entities/post.entity';
+import { Profile } from 'src/modules/profile/entities/profile.entity';
 import {
   Entity,
   PrimaryGeneratedColumn,
   Column,
   OneToOne,
-  JoinColumn,
   OneToMany,
 } from 'typeorm';
 
@@ -41,11 +41,6 @@ export class User {
   })
   bio: string;
 
-  @OneToOne(() => Phone, (phone) => phone.user)
-  phone: Phone;
-  @OneToMany(() => Post, (post) => post.user)
-  posts: Post[];
-
   @Column({
     type: 'timestamp',
     nullable: true,
@@ -60,4 +55,11 @@ export class User {
     onUpdate: 'CURRENT_TIMESTAMP',
   })
   updated_at: Date;
+
+  @OneToOne(() => Phone, (phone) => phone.user)
+  phone: Phone;
+  @OneToMany(() => Post, (post) => post.user)
+  posts: Post[];
+  @OneToOne(() => Profile, (profile) => profile.user)
+  profile: Profile;
 }

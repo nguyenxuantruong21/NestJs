@@ -1,5 +1,4 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
-import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import {
@@ -17,6 +16,7 @@ import { hashPassword } from 'src/utils/hashing';
 import { QueryFindAll } from './users.controller';
 import { PhoneService } from '../phone/phone.service';
 import { PostService } from '../post/post.service';
+import { ProfileService } from '../profile/profile.service';
 
 @Injectable()
 export class UsersService {
@@ -30,15 +30,22 @@ export class UsersService {
     private readonly usersRepository: Repository<User>,
     private readonly phoneService: PhoneService,
     private readonly postsService: PostService,
+    private readonly profileService: ProfileService,
   ) {}
 
-  async create(createUserDto: Partial<User & { phone: string }>) {
-    const { phone, ...userData } = createUserDto;
+  async create(
+    createUserDto: Partial<
+      User & { phone: string; gender: string; photo: string }
+    >,
+  ) {
+    const { phone, gender, photo, ...userData } = createUserDto;
+    const profileData = { gender, photo };
     const newUser = this.usersRepository.create(userData);
     newUser.password = hashPassword(newUser.password);
-    const user = await this.usersRepository.save(newUser);
-    const data = await this.phoneService.create({ phone }, user);
-    return data;
+    const userRes = await this.usersRepository.save(newUser);
+    await this.phoneService.create({ phone }, userRes);
+    await this.profileService.create(profileData, userRes);
+    return userData;
   }
 
   async findAll(query: QueryFindAll) {
@@ -121,8 +128,12 @@ export class UsersService {
     // delete post by user_id
     await this.postsService.deleteByUserId(id);
 
+    // delete profile by user_id
+    await this.profileService.deleteByUserId(id);
+
     // delete user
     await this.usersRepository.delete(id);
+
     return user;
   }
 }

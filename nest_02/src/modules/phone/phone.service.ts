@@ -1,6 +1,4 @@
 import { Injectable } from '@nestjs/common';
-import { CreatePhoneDto } from './dto/create-phone.dto';
-import { UpdatePhoneDto } from './dto/update-phone.dto';
 import { User } from '../users/entities/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Phone } from './entities/phone.entity';

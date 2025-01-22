@@ -7,6 +7,7 @@ import { PhoneModule } from '../phone/phone.module';
 import { PostModule } from '../post/post.module';
 import { Phone } from '../phone/entities/phone.entity';
 import { Post } from '../post/entities/post.entity';
+import { ProfileModule } from '../profile/profile.module';
 
 @Module({
   controllers: [UsersController],
@@ -15,6 +16,7 @@ import { Post } from '../post/entities/post.entity';
     TypeOrmModule.forFeature([User, Phone, Post]),
     PhoneModule,
     PostModule,
+    ProfileModule,
   ],
 })
 export class UsersModule {}
