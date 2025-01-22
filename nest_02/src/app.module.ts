@@ -11,6 +11,8 @@ import { PostModule } from './modules/post/post.module';
 import { Post } from './modules/post/entities/post.entity';
 import { ProfileModule } from './modules/profile/profile.module';
 import { Profile } from './modules/profile/entities/profile.entity';
+import { CommentModule } from './modules/comment/comment.module';
+import { Comment } from './modules/comment/entities/comment.entity';
 
 const isDev = process.env.NODE_ENV === 'development' || !process.env.NODE_ENV;
 
@@ -24,7 +26,7 @@ const isDev = process.env.NODE_ENV === 'development' || !process.env.NODE_ENV;
       username: process.env.DB_USER_NAME,
       password: process.env.DB_PASSWORD,
       database: process.env.DB_DATABASE,
-      entities: [User, Phone, Post, Profile],
+      entities: [User, Phone, Post, Profile, Comment],
       synchronize: isDev,
       logging: isDev,
     }),
@@ -32,6 +34,7 @@ const isDev = process.env.NODE_ENV === 'development' || !process.env.NODE_ENV;
     PhoneModule,
     PostModule,
     ProfileModule,
+    CommentModule,
   ],
   controllers: [AppController],
   providers: [AppService],

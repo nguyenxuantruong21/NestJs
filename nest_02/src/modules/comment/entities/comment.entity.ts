@@ -1,26 +1,18 @@
 import { User } from 'src/modules/users/entities/user.entity';
 import {
-  Entity,
-  PrimaryGeneratedColumn,
   Column,
-  OneToOne,
+  Entity,
   JoinColumn,
   ManyToOne,
+  PrimaryGeneratedColumn,
 } from 'typeorm';
 
-@Entity('posts')
-export class Post {
+@Entity('comments')
+export class Comment {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({
-    length: 15,
-  })
-  title: string;
-
-  @Column({
-    length: 15,
-  })
+  @Column()
   content: string;
 
   @Column({
@@ -38,7 +30,7 @@ export class Post {
   })
   updated_at: Date;
 
-  @ManyToOne(() => User, (user) => user.posts)
+  @ManyToOne(() => User, (user) => user.comments)
   @JoinColumn({ name: 'user_id' })
   user: User;
 }

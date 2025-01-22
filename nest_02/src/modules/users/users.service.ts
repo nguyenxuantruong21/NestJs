@@ -1,4 +1,9 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  forwardRef,
+  Inject,
+  Injectable,
+} from '@nestjs/common';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import {
@@ -17,6 +22,7 @@ import { QueryFindAll } from './users.controller';
 import { PhoneService } from '../phone/phone.service';
 import { PostService } from '../post/post.service';
 import { ProfileService } from '../profile/profile.service';
+import { CommentService } from '../comment/comment.service';
 
 @Injectable()
 export class UsersService {
@@ -31,6 +37,7 @@ export class UsersService {
     private readonly phoneService: PhoneService,
     private readonly postsService: PostService,
     private readonly profileService: ProfileService,
+    private readonly commentService: CommentService,
   ) {}
 
   async create(
@@ -122,6 +129,9 @@ export class UsersService {
       },
     });
 
+    // delete comment by user_id
+    await this.commentService.deleteAllCommentByUserId(id);
+
     // delete phone by user_id
     await this.phoneService.deleteByUserId(id);
 
@@ -135,5 +145,9 @@ export class UsersService {
     await this.usersRepository.delete(id);
 
     return user;
+  }
+
+  async findUserById(id: number) {
+    return this.usersRepository.findOne({ where: { id } });
   }
 }

@@ -1,3 +1,4 @@
+import { Comment } from 'src/modules/comment/entities/comment.entity';
 import { Phone } from 'src/modules/phone/entities/phone.entity';
 import { Post } from 'src/modules/post/entities/post.entity';
 import { Profile } from 'src/modules/profile/entities/profile.entity';
@@ -62,4 +63,6 @@ export class User {
   posts: Post[];
   @OneToOne(() => Profile, (profile) => profile.user)
   profile: Profile;
+  @OneToMany(() => Comment, (comment) => comment.user)
+  comments: Comment[];
 }
