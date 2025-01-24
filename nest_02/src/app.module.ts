@@ -13,6 +13,8 @@ import { ProfileModule } from './modules/profile/profile.module';
 import { Profile } from './modules/profile/entities/profile.entity';
 import { CommentModule } from './modules/comment/comment.module';
 import { Comment } from './modules/comment/entities/comment.entity';
+import { CourseModule } from './modules/course/course.module';
+import { Course } from './modules/course/entities/course.entity';
 
 const isDev = process.env.NODE_ENV === 'development' || !process.env.NODE_ENV;
 
@@ -26,7 +28,7 @@ const isDev = process.env.NODE_ENV === 'development' || !process.env.NODE_ENV;
       username: process.env.DB_USER_NAME,
       password: process.env.DB_PASSWORD,
       database: process.env.DB_DATABASE,
-      entities: [User, Phone, Post, Profile, Comment],
+      entities: [User, Phone, Post, Profile, Comment, Course],
       synchronize: isDev,
       logging: isDev,
     }),
@@ -35,6 +37,7 @@ const isDev = process.env.NODE_ENV === 'development' || !process.env.NODE_ENV;
     PostModule,
     ProfileModule,
     CommentModule,
+    CourseModule,
   ],
   controllers: [AppController],
   providers: [AppService],

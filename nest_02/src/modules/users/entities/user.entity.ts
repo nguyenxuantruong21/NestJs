@@ -1,3 +1,4 @@
+import { Course } from 'src/modules/course/entities/course.entity';
 import { Comment } from 'src/modules/comment/entities/comment.entity';
 import { Phone } from 'src/modules/phone/entities/phone.entity';
 import { Post } from 'src/modules/post/entities/post.entity';
@@ -8,6 +9,7 @@ import {
   Column,
   OneToOne,
   OneToMany,
+  ManyToMany,
 } from 'typeorm';
 
 @Entity('users')
@@ -59,10 +61,16 @@ export class User {
 
   @OneToOne(() => Phone, (phone) => phone.user)
   phone: Phone;
+
   @OneToMany(() => Post, (post) => post.user)
   posts: Post[];
+
   @OneToOne(() => Profile, (profile) => profile.user)
   profile: Profile;
+
   @OneToMany(() => Comment, (comment) => comment.user)
   comments: Comment[];
+
+  @ManyToMany(() => Course, (course) => course.users)
+  courses: Course[];
 }
