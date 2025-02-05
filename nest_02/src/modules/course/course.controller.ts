@@ -6,9 +6,11 @@ import {
   Patch,
   Param,
   Delete,
+  UseGuards,
 } from '@nestjs/common';
 import { CourseService } from './course.service';
 import { UpdateCourseDto } from './dto/update-course.dto';
+import { JwtAuthGuard } from 'src/guards/jwt/jwt-auth.guard';
 
 @Controller('course')
 export class CourseController {
@@ -34,6 +36,7 @@ export class CourseController {
     return this.courseService.update(+id, updateCourseDto);
   }
 
+  @UseGuards(JwtAuthGuard)
   @Post('/add-student')
   async addUserToCourse(@Body() body: any) {
     return this.courseService.addUserToCourse(body);

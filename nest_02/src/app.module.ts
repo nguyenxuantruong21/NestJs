@@ -15,12 +15,16 @@ import { CommentModule } from './modules/comment/comment.module';
 import { Comment } from './modules/comment/entities/comment.entity';
 import { CourseModule } from './modules/course/course.module';
 import { Course } from './modules/course/entities/course.entity';
+import { AuthModule } from './modules/auth/auth.module';
 
 const isDev = process.env.NODE_ENV === 'development' || !process.env.NODE_ENV;
 
 @Module({
   imports: [
-    ConfigModule.forRoot(),
+    ConfigModule.forRoot({
+      isGlobal: true,
+      envFilePath: '.env',
+    }),
     TypeOrmModule.forRoot({
       type: 'mysql',
       host: process.env.DB_HOST,
@@ -38,6 +42,7 @@ const isDev = process.env.NODE_ENV === 'development' || !process.env.NODE_ENV;
     ProfileModule,
     CommentModule,
     CourseModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],

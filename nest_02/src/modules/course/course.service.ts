@@ -25,8 +25,12 @@ export class CourseService {
     return this.courseRepository.find();
   }
 
-  findOne(id: number) {
-    return this.courseRepository.findOne({ where: { id } });
+  async findOne(id: number) {
+    const course = await this.courseRepository.findOne({ where: { id } });
+    if (!course) {
+      throw new BadRequestException('Course Not Found');
+    }
+    return course;
   }
 
   async update(id: number, updateCourseDto: any) {

@@ -17,12 +17,13 @@ import {
   Repository,
 } from 'typeorm';
 import { User } from './entities/user.entity';
-import { hashPassword } from 'src/utils/hashing';
+import { comparePassword, hashPassword } from 'src/utils/hashing';
 import { QueryFindAll } from './users.controller';
 import { PhoneService } from '../phone/phone.service';
 import { PostService } from '../post/post.service';
 import { ProfileService } from '../profile/profile.service';
 import { CommentService } from '../comment/comment.service';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class UsersService {
@@ -149,5 +150,40 @@ export class UsersService {
 
   async findUserById(id: number) {
     return this.usersRepository.findOne({ where: { id } });
+  }
+
+  findUserByEmail(email: string) {
+    const user = this.usersRepository.findOneBy({ email });
+    return user;
+  }
+
+  async validateUser(email: string, password: string) {
+    const user = await this.findUserByEmail(email);
+    if (!user) {
+      return null;
+    }
+    const status = comparePassword(password, user.password);
+    if (status) {
+      return user;
+    }
+    return null;
+  }
+
+  async saveRefreshToken(refreshToken: string, userId: number) {
+    const user = await this.usersRepository.findOneBy({ id: userId });
+    const hasedRefreshToken = bcrypt.hashSync(refreshToken, 10);
+    user.refresh_token = hasedRefreshToken;
+    await this.usersRepository.save(user);
+  }
+
+  async verifyRefreshToken(refreshToken: string, useId: number) {
+    const user = await this.usersRepository.findOneBy({ id: useId });
+    if (user) {
+      const status = bcrypt.compareSync(refreshToken, user.refresh_token);
+      if (status) {
+        return user;
+      }
+    }
+    return false;
   }
 }

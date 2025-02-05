@@ -45,6 +45,12 @@ export class User {
   bio: string;
 
   @Column({
+    type: 'text',
+    nullable: true,
+  })
+  refresh_token?: string;
+
+  @Column({
     type: 'timestamp',
     nullable: true,
     default: () => 'CURRENT_TIMESTAMP',
