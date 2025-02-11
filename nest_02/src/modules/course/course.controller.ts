@@ -42,6 +42,7 @@ export class CourseController {
     return this.courseService.addUserToCourse(body);
   }
 
+  @UseGuards(JwtAuthGuard)
   @Delete('/delete-student')
   async deleteUserFromCourse(@Body() body: any) {
     return this.courseService.deleteUserFromCourse(body);
