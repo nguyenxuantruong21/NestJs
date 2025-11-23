@@ -1,10 +1,15 @@
-import { MigrationInterface, QueryRunner, Table } from 'typeorm';
+import {
+  MigrationInterface,
+  QueryRunner,
+  Table,
+  TableForeignKey,
+} from 'typeorm';
 
-export class CreatePostTable1739248054888 implements MigrationInterface {
+export class CreatePhoneTable1739431624166 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.createTable(
       new Table({
-        name: 'posts',
+        name: 'phones',
         columns: [
           {
             name: 'id',
@@ -14,12 +19,13 @@ export class CreatePostTable1739248054888 implements MigrationInterface {
             generationStrategy: 'increment',
           },
           {
-            name: 'title',
-            type: 'varchar(255)',
+            name: 'phone',
+            type: 'varchar(15)',
           },
           {
-            name: 'content',
-            type: 'text',
+            name: 'user_id',
+            type: 'int',
+            isNullable: true,
           },
           {
             name: 'created_at',
@@ -34,9 +40,19 @@ export class CreatePostTable1739248054888 implements MigrationInterface {
         ],
       }),
     );
+
+    await queryRunner.createForeignKey(
+      'phones',
+      new TableForeignKey({
+        columnNames: ['user_id'],
+        referencedColumnNames: ['id'],
+        referencedTableName: 'users',
+        name: 'phone_user_id_foreign',
+      }),
+    );
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
-    await queryRunner.dropTable('posts');
+    await queryRunner.dropTable('phones', true);
   }
 }

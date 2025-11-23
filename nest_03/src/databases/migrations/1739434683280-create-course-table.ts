@@ -1,20 +1,25 @@
 import { MigrationInterface, QueryRunner, Table } from 'typeorm';
 
-export class CreatePostsCategoriesTable1739256055642
-  implements MigrationInterface
-{
+export class CreateCourseTable1739434683280 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.createTable(
       new Table({
-        name: 'posts_categories',
+        name: 'courses',
         columns: [
           {
-            name: 'post_id',
+            name: 'id',
             type: 'int',
+            isPrimary: true,
+            isGenerated: true,
+            generationStrategy: 'increment',
           },
           {
-            name: 'category_id',
-            type: 'int',
+            name: 'name',
+            type: 'varchar(255)',
+          },
+          {
+            name: 'price',
+            type: 'double(20,2)',
           },
           {
             name: 'created_at',
@@ -32,6 +37,6 @@ export class CreatePostsCategoriesTable1739256055642
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
-    await queryRunner.dropTable('posts_categories');
+    await queryRunner.dropTable('courses');
   }
 }

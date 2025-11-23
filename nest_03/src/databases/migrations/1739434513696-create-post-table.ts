@@ -1,10 +1,15 @@
-import { MigrationInterface, QueryRunner, Table } from 'typeorm';
+import {
+  MigrationInterface,
+  QueryRunner,
+  Table,
+  TableForeignKey,
+} from 'typeorm';
 
-export class CreateCategoryTable1739249810370 implements MigrationInterface {
+export class CreatePostTable1739434513696 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.createTable(
       new Table({
-        name: 'categories',
+        name: 'posts',
         columns: [
           {
             name: 'id',
@@ -14,8 +19,17 @@ export class CreateCategoryTable1739249810370 implements MigrationInterface {
             generationStrategy: 'increment',
           },
           {
-            name: 'name',
+            name: 'title',
             type: 'varchar(255)',
+          },
+          {
+            name: 'content',
+            type: 'text',
+          },
+          {
+            name: 'user_id',
+            type: 'int',
+            isNullable: true,
           },
           {
             name: 'created_at',
@@ -30,9 +44,19 @@ export class CreateCategoryTable1739249810370 implements MigrationInterface {
         ],
       }),
     );
+
+    await queryRunner.createForeignKey(
+      'posts',
+      new TableForeignKey({
+        columnNames: ['user_id'],
+        referencedColumnNames: ['id'],
+        referencedTableName: 'users',
+        name: 'posts_user_id_foreign',
+      }),
+    );
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
-    await queryRunner.dropTable('categories');
+    await queryRunner.dropTable('posts');
   }
 }
